@@ -1,7 +1,7 @@
 # webformsut
 a Django webapp to  generate simple web form SUT
 
-# Install Djangon windows
+# Install Django on windows
 
 ### Install python and pip on Windows with chocolatey installed (http://chocolatey.org)
 
