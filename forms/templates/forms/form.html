@@ -1,0 +1,27 @@
+
+{% block content%}
+
+{{ formstring }}
+
+<hr />
+{{ formset }}
+
+<hr />
+
+<form method="POST" action="">
+    {% csrf_token %}
+    {% autoescape off %}
+    {{ form }}
+    {% endautoescape %}
+
+</form> 
+
+<ul>
+{% for key,value in rawpost.items %}
+<li>
+    {{ key }} = {{ value }}
+</li>
+{% endfor %}
+</ul>
+
+{% endblock content%}
