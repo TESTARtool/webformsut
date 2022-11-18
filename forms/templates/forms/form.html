@@ -1,11 +1,8 @@
 
 {% block content%}
-
-{{ formstring }}
-
+<h1>webformsut </h1><small>git commit: {{ version }}</small><br />
 <hr />
-{{ formset }}
-
+{{ formstring }}
 <hr />
 
 <form method="POST" action="">
@@ -24,6 +21,6 @@
 {% endfor %}
 </ul>
 
-<small>webformsut git commit: {{ version }}</small>
+
 
 {% endblock content%}
