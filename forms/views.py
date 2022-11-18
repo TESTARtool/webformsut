@@ -15,6 +15,7 @@ def get_git_revision_short_hash() -> str:
     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
 
 VERSION=get_git_revision_hash()
+print("Running git commit version {0} ".format(VERSION))
 
 formInput = {
 	'cb0': {'type':'checkbox', 'name': 'checkbox', 'value': "checkbox0"},
