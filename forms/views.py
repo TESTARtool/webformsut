@@ -93,6 +93,8 @@ def index(request,formstring=""):
 		rawPost['epoch']=int(time.time())
 		rawPost['datetime']=str(datetime.datetime.now())
 		print(json.dumps(rawPost))
+		# reset for to a back link
+		form ="<a href='{0}'>return to form</a>".format(request.path)
 		context = { 'formstring': formstring , 'formset': formset, 'form': form, 'rawpost': rawPost, 'version': VERSION}
 		return render(request,'forms/form.html', context)
 
