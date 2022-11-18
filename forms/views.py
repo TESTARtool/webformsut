@@ -5,7 +5,16 @@ from django.http import HttpResponse
 from textwrap import wrap
 from copy import deepcopy
 import json,time,datetime
+import subprocess
 
+
+def get_git_revision_hash() -> str:
+    return subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
+
+def get_git_revision_short_hash() -> str:
+    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+
+VERSION=get_git_revision_hash()
 
 formInput = {
 	'cb0': {'type':'checkbox', 'name': 'checkbox', 'value': "checkbox0"},
@@ -75,7 +84,7 @@ def index(request,formstring=""):
 
 	form = form + '<input type="submit" value="Submit" />'
 	print(form)
-	context = { 'formstring': formstring , 'formset': formset, 'form': form}
+	context = { 'formstring': formstring , 'formset': formset, 'form': form, 'version': VERSION}
 
 	if request.method =='POST':
 		rawPost = deepcopy(request.POST)
@@ -83,7 +92,7 @@ def index(request,formstring=""):
 		rawPost['epoch']=int(time.time())
 		rawPost['datetime']=str(datetime.datetime.now())
 		print(json.dumps(rawPost))
-		context = { 'formstring': formstring , 'formset': formset, 'form': form, 'rawpost': rawPost}
+		context = { 'formstring': formstring , 'formset': formset, 'form': form, 'rawpost': rawPost, 'version': VERSION}
 		return render(request,'forms/form.html', context)
 
 	return render(request,'forms/form.html', context)
