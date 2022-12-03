@@ -2,17 +2,44 @@
 {% block content%}
 <h1>webformsut </h1><small>git commit: {{ version }}</small><br />
 <hr />
-{{ formstring }}
-<hr />
 
+{% if form1 %}
 <form method="POST" action="">
     {% csrf_token %}
     {% autoescape off %}
-    {{ form }}
+    {{ form1 }}
     {% endautoescape %}
-
 </form> 
+{% endif %}
 
+{% if form2 %}
+<form method="POST" action="">
+    {% csrf_token %}
+    {% autoescape off %}
+    {{ form2 }}
+    {% endautoescape %}
+</form> 
+{% endif %}
+
+{% if form3 %}
+<form method="POST" action="">
+    {% csrf_token %}
+    {% autoescape off %}
+    {{ form3 }}
+    {% endautoescape %}
+</form> 
+{% endif%}
+
+{% if form4 %}
+<form method="POST" action="">
+    {% csrf_token %}
+    {% autoescape off %}
+    {{ form4 }}
+    {% endautoescape %}
+</form> 
+{% endif%}
+
+{% if rawpost %}
 <ul>
 {% for key,value in rawpost.items %}
 <li>
@@ -20,7 +47,6 @@
 </li>
 {% endfor %}
 </ul>
-
-
+{% endif%}
 
 {% endblock content%}

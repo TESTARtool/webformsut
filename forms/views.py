@@ -48,17 +48,16 @@ formInput = {
 	'wee': {'type':'week', 'name': 'week'},
 }
 
-
-# Create your views here.
-
-def index(request,formstring=""):
-
+def create_form(formstring):
+	'''
+	Create web form from the formstring.
+	The formstring is wrapped every 3 chars.
+	'''
 	form = ''
 	id_counts = dict()
 	name_counts = dict()
 
-	formset= wrap(formstring,3)
-	print("Formset = {}".format(formset))
+	formset = wrap(formstring,3)
 	for i in formset:
 		form_item = ''
 		label_item = ''
@@ -92,8 +91,29 @@ def index(request,formstring=""):
 			print("WARNING: unknown field '{}', skipping".format(i))
 
 	form = form + '<input type="submit" value="Submit" />'
-	print(form)
-	context = { 'formstring': formstring , 'formset': formset, 'form': form, 'version': VERSION}
+	return form
+
+
+# Create your views here.
+
+def index(request,formstring1="",formstring2="",formstring3="",formstring4=""):
+
+	form1, form2, form3, form4 = '', '', '',''
+	if formstring1 != "":
+		form1 = create_form(formstring1)
+		print(form1)
+	if formstring2 != "":
+		form2 = create_form(formstring2)
+		print(form2)
+	if formstring3 != "":
+		form3 = create_form(formstring3)
+		print(form3)
+	if formstring4 != "":
+		form4 = create_form(formstring4)
+		print(form4)
+
+	
+	context = { 'form1': form1, 'form2': form2, 'form3': form3, 'form4':form4, 'version': VERSION}
 
 	if request.method =='POST':
 		rawPost = deepcopy(request.POST)
@@ -101,9 +121,9 @@ def index(request,formstring=""):
 		rawPost['epoch']=int(time.time())
 		rawPost['datetime']=str(datetime.datetime.now())
 		print(json.dumps(rawPost))
-		# reset for to a back link
-		form ="<a href='{0}'>return to form</a>".format(request.path)
-		context = { 'formstring': formstring , 'formset': formset, 'form': form, 'rawpost': rawPost, 'version': VERSION}
+		# reset form to a back link
+		form1 ="<a href='{0}'>return to form</a>".format(request.path)
+		context = { 'form1': form1, 'rawpost': rawPost, 'version': VERSION}
 		return render(request,'forms/form.html', context)
 
 	return render(request,'forms/form.html', context)

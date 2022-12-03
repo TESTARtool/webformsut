@@ -17,7 +17,10 @@ from django.contrib import admin
 from django.urls import include,path
 
 urlpatterns = [
-    path('forms/<str:formstring>', include('forms.urls')),
+    path('forms/<str:formstring1>', include('forms.urls')),
+    path('forms/<str:formstring1>/<str:formstring2>', include('forms.urls')),
+    path('forms/<str:formstring1>/<str:formstring2>/<str:formstring3>', include('forms.urls')),
+    path('forms/<str:formstring1>/<str:formstring2>/<str:formstring3>/<str:formstring4>', include('forms.urls')),
     path('forms/', include('forms.urls')),
     path('', include('forms.urls')),
     path('admin/', admin.site.urls),
