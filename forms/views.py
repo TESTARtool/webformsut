@@ -97,6 +97,7 @@ def create_form(formstring):
 # Create your views here.
 
 def index(request,formstring1="",formstring2="",formstring3="",formstring4=""):
+	rawPost=None
 
 	form1, form2, form3, form4 = '', '', '',''
 	if formstring1 != "":
@@ -112,8 +113,10 @@ def index(request,formstring1="",formstring2="",formstring3="",formstring4=""):
 		form4 = create_form(formstring4)
 		print(form4)
 
-	
-	context = { 'form1': form1, 'form2': form2, 'form3': form3, 'form4':form4, 'version': VERSION}
+	if formstring1 == "" and formstring2 == "" and formstring3 == "" and formstring4 == "":
+		rawPost=formInput
+
+	context = { 'form1': form1, 'form2': form2, 'form3': form3, 'form4':form4, 'rawpost':rawPost, 'version': VERSION}
 
 	if request.method =='POST':
 		rawPost = deepcopy(request.POST)

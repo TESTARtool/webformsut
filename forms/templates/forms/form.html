@@ -1,42 +1,55 @@
-
+<html>
+<head>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'webformsut.css' %}" />
+</head>
+<body>
 {% block content%}
 <h1>webformsut </h1><small>git commit: {{ version }}</small><br />
 <hr />
 
 {% if form1 %}
+<div class="form1">
 <form method="POST" action="">
     {% csrf_token %}
     {% autoescape off %}
     {{ form1 }}
     {% endautoescape %}
 </form> 
+</div>
 {% endif %}
 
 {% if form2 %}
+<div class="form2">
 <form method="POST" action="">
     {% csrf_token %}
     {% autoescape off %}
     {{ form2 }}
     {% endautoescape %}
 </form> 
+</div>
 {% endif %}
 
 {% if form3 %}
+<div class="form3">
 <form method="POST" action="">
     {% csrf_token %}
     {% autoescape off %}
     {{ form3 }}
     {% endautoescape %}
 </form> 
+</div>
 {% endif%}
 
 {% if form4 %}
+<div class="form4">
 <form method="POST" action="">
     {% csrf_token %}
     {% autoescape off %}
     {{ form4 }}
     {% endautoescape %}
 </form> 
+</div>
 {% endif%}
 
 {% if rawpost %}
@@ -50,3 +63,5 @@
 {% endif%}
 
 {% endblock content%}
+</body>
+</html>
