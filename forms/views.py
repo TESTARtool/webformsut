@@ -4,7 +4,7 @@ from django import forms
 from django.http import HttpResponse
 from textwrap import wrap
 from copy import deepcopy
-import json,time,datetime
+import json,time,datetime,os
 import subprocess
 import random
 
@@ -12,12 +12,20 @@ try:
     HOSTNAME = url('index')
 except:
     HOSTNAME = 'http://localhost'
+script_dir = os.path.abspath( os.path.dirname( __file__ ) )
+
 
 def get_git_revision_hash() -> str:
-    return subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
-
+    try:
+        return subprocess.check_output(['/usr/bin/git', 'rev-parse', 'HEAD'],cwd=script_dir).decode('ascii').strip()
+    except:
+        return "unknown"
+    
 def get_git_revision_short_hash() -> str:
-    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').strip()
+    try:
+        return subprocess.check_output(['/usr/bin/git', 'rev-parse', '--short', 'HEAD'],cwd=script_dir).decode('ascii').strip()
+    except:
+        return "unknown"
 
 VERSION=get_git_revision_hash()
 print("Running git commit version {0} ".format(VERSION))
