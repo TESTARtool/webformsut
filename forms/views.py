@@ -6,7 +6,12 @@ from textwrap import wrap
 from copy import deepcopy
 import json,time,datetime
 import subprocess
+import random
 
+try:
+    HOSTNAME = url('index')
+except:
+    HOSTNAME = 'http://localhost'
 
 def get_git_revision_hash() -> str:
     return subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii').strip()
@@ -16,6 +21,25 @@ def get_git_revision_short_hash() -> str:
 
 VERSION=get_git_revision_hash()
 print("Running git commit version {0} ".format(VERSION))
+
+
+information = '''
+<h1>How to use:</h1>
+<p>
+Up to 4 different forms can be added to webformsut page. Every form  can be configed with a &lt;form string&gt; 
+consisting of one or more 3 letter codes as defined below. 
+
+</p>
+<p>
+HOSTNAME/forms/&lt;form string 1&gt;<br />
+HOSTNAME/forms/&lt;form string 1&gt;/&lt;form string 2&gt;<br />
+HOSTNAME/forms/&lt;form string 1&gt;/&lt;form string 2&gt;/&lt;form string 3&gt;<br />
+HOSTNAME/forms/&lt;form string 1&gt;/&lt;form string 2&gt;/&lt;form string 3&gt;/&lt;form string 4&gt;<br />
+</p>
+<hr />
+
+'''.replace("HOSTNAME", HOSTNAME)
+
 
 formInput = {
 	'cb0': {'type':'checkbox', 'name': 'checkbox', 'value': "checkbox0"},
@@ -48,15 +72,45 @@ formInput = {
 	'wee': {'type':'week', 'name': 'week'},
 }
 
+
+def get_client_ip(request):
+    """get the client ip from the request
+    """
+    #remote_address = request.META.get('REMOTE_ADDR')
+    remote_address = request.META.get('HTTP_X_FORWARDED_FOR') or request.META.get('REMOTE_ADDR')
+    # set the default value of the ip to be the REMOTE_ADDR if available
+    # else None
+    ip = remote_address
+    # try to get the first non-proxy ip (not a private ip) from the
+    # HTTP_X_FORWARDED_FOR
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        proxies = x_forwarded_for.split(',')
+        # remove the private ips from the beginning
+        while (len(proxies) > 0 and proxies[0].startswith(PRIVATE_IPS_PREFIX)):
+            proxies.pop(0)
+            # take the first ip which is not a private one (of a proxy)
+            if len(proxies) > 0:
+                ip = proxies[0]
+    return ip
+
+
+def random_formstring (formInput):
+	max_fields = len(formInput)
+	for i in range (random.randrange(max_fields)+1):
+		print(i)
+	
+
 def create_form(formstring):
 	'''
 	Create web form from the formstring.
 	The formstring is wrapped every 3 chars.
 	'''
+	begin_epoch=float(time.time())
 	form = ''
 	id_counts = dict()
 	name_counts = dict()
-
+	random_formstring (formInput)
 	formset = wrap(formstring,3)
 	for i in formset:
 		form_item = ''
@@ -89,8 +143,9 @@ def create_form(formstring):
 			form = form + form_item +'> </br> \n'
 		else:
 			print("WARNING: unknown field '{}', skipping".format(i))
-
-	form = form + '<input type="submit" value="Submit" />'
+	form = form + '<input type="hidden" name="formstring" id="formstring" value="{}">\n'.format(formstring)
+	form = form + '<input type="hidden" name="begin_epoch" id="begin_epoch" value="{}">\n'.format(begin_epoch)
+	form = form + '<input type="submit" value="Submit" />\n'
 	return form
 
 
@@ -113,20 +168,30 @@ def index(request,formstring1="",formstring2="",formstring3="",formstring4=""):
 		form4 = create_form(formstring4)
 		print(form4)
 
+	context = { 'form1': form1, 'form2': form2, 'form3': form3, 'form4':form4, 'rawpost':rawPost, 'version': VERSION}
+
 	if formstring1 == "" and formstring2 == "" and formstring3 == "" and formstring4 == "":
 		rawPost=formInput
-
-	context = { 'form1': form1, 'form2': form2, 'form3': form3, 'form4':form4, 'rawpost':rawPost, 'version': VERSION}
+		context = {'rawpost': rawPost, 'information': information, 'version': VERSION}
 
 	if request.method =='POST':
 		rawPost = deepcopy(request.POST)
 		del rawPost['csrfmiddlewaretoken'] # remove csrfmiddlewaretoken, unneeded information 
-		rawPost['epoch']=int(time.time())
+		end_epoch = float(time.time())
+		rawPost['end_epoch']=end_epoch
+		# try to calculate delta_epoch.
+		try:
+			begin_epoch=float(rawPost['begin_epoch'])
+			delta_epoch = end_epoch-begin_epoch
+			rawPost['delta_epoch']=delta_epoch
+		except:
+			print('Warning: Cannot calculate delta_epoch')
 		rawPost['datetime']=str(datetime.datetime.now())
+
 		print(json.dumps(rawPost))
-		# reset form to a back link
-		form1 ="<a href='{0}'>return to form</a>".format(request.path)
-		context = { 'form1': form1, 'rawpost': rawPost, 'version': VERSION}
+		# return a back link
+		backlink ="<a href='{0}'>return to form</a>".format(request.path)
+		context = { 'backlink': backlink, 'rawpost': rawPost, 'version': VERSION}
 		return render(request,'forms/form.html', context)
 
 	return render(request,'forms/form.html', context)

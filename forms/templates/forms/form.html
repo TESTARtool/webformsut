@@ -8,6 +8,14 @@
 <h1>webformsut </h1><small>git commit: {{ version }}</small><br />
 <hr />
 
+{% if backlink %}
+<div class="backlink">
+        {% autoescape off %}
+        {{ backlink }}
+        {% endautoescape %}
+</div>
+{% endif %}
+
 {% if form1 %}
 <div class="form1">
 <form method="POST" action="">
@@ -51,6 +59,12 @@
 </form> 
 </div>
 {% endif%}
+
+{% if information %}
+{% autoescape off %}
+{{ information }} 
+{% endautoescape %}
+{% endif %}
 
 {% if rawpost %}
 <ul>
