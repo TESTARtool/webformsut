@@ -152,7 +152,7 @@ def create_form(formstring):
 		else:
 			print("WARNING: unknown field '{}', skipping".format(i))
 	form = form + '<input type="hidden" name="formstring" id="formstring" value="{}">\n'.format(formstring)
-	form = form + '<input type="hidden" name="begin_epoch" id="begin_epoch" value="{}">\n'.format(begin_epoch)
+	form = form + '<input type="hidden" name="begin_epoch" id="begin_epoch" value="{}">\n'.format(float(round(begin_epoch,3)))
 	form = form + '<input type="submit" value="Submit" />\n'
 	return form
 
@@ -186,12 +186,12 @@ def index(request,formstring1="",formstring2="",formstring3="",formstring4=""):
 		rawPost = deepcopy(request.POST)
 		del rawPost['csrfmiddlewaretoken'] # remove csrfmiddlewaretoken, unneeded information 
 		end_epoch = float(time.time())
-		rawPost['end_epoch']=end_epoch
+		rawPost['end_epoch']=round(end_epoch,3)
 		# try to calculate delta_epoch.
 		try:
-			begin_epoch=float(rawPost['begin_epoch'])
+			begin_epoch = round(float(rawPost['begin_epoch']),3)
 			delta_epoch = end_epoch-begin_epoch
-			rawPost['delta_epoch']=delta_epoch
+			rawPost['delta_epoch']=round(delta_epoch,3)
 		except:
 			print('Warning: Cannot calculate delta_epoch')
 		rawPost['datetime']=str(datetime.datetime.now())
