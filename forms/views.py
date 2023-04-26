@@ -76,10 +76,17 @@ formInput = {
 	'nu3': {'type':'number', 'name': 'number', 'min': '0', 'max': '1000', 'label': 'Number (0 - 1000)' },
 	'nu4': {'type':'number', 'name': 'number', 'min': '-1000', 'max': '0', 'label': 'Number (-1000 - 0)' },
 	'nu5': {'type':'number', 'name': 'number', 'min': '-1000', 'max': '1000', 'label': 'Number (-1000 - 1000)' },
-	'nu6': {'type':'number', 'name': 'number', 'min': '0', 'max': '100', 'labe	l': 'Number' },
-	'nu7': {'type':'number', 'name': 'number', 'min': '0', 'max': '100', 'label': 'Number' },
+	'nu6': {'type':'number', 'name': 'number', 'min': '0', 'max': '200', 'label': 'Number 200' },
+	'nu7': {'type':'number', 'name': 'number', 'min': '0', 'max': '400', 'label': 'Number 400' },
 	'pas': {'type':'password', 'name': 'password', 'placeholder': 'Enter your password', 'label': 'Password' },
-	'ra1': {'type':'range', 'name': 'range', 'min': '0', 'max': '100', 'label': 'Range' },
+	'ra0': {'type':'range', 'name': 'range', 'label': 'Range' },
+	'ra1': {'type':'range', 'name': 'range', 'min': '0', 'max': '100','label': 'Positive Range (0 - 100)' },
+	'ra2': {'type':'range', 'name': 'range', 'min': '-100', 'max': '0', 'label': 'Negative Range (-100 - 0)' },
+	'ra3': {'type':'range', 'name': 'range', 'min': '0', 'max': '1000', 'label': 'Range (0 - 1000)' },
+	'ra4': {'type':'range', 'name': 'range', 'min': '-1000', 'max': '0', 'label': 'Range (-1000 - 0)' },
+	'ra5': {'type':'range', 'name': 'range', 'min': '-1000', 'max': '1000', 'label': 'Range (-1000 - 1000)' },
+	'ra6': {'type':'range', 'name': 'range', 'min': '0', 'max': '200', 'label': 'Range 200' },
+	'ra7': {'type':'range', 'name': 'range', 'min': '0', 'max': '400', 'label': 'Range 400' },
 	'res': {'type':'reset', 'name': 'reset' },
 	'sea': {'type':'search', 'name': 'search'},
 	'tel': {'type':'tel', 'name': 'phone','placeholder': 'Enter your phone number', 'label': 'Phone' },
@@ -128,7 +135,6 @@ def create_form(formstring):
 	form = ''
 	id_counts = dict()
 	name_counts = dict()
-	random_formstring (formInput)
 	formset = wrap(formstring,3)
 	for i in formset:
 		form_item = ''
