@@ -65,6 +65,9 @@ formInput = {
 	'da2': {'type':'date', 'name': 'end date', 'label': 'End date'},
 	'da3': {'type':'date', 'name': 'birthday', 'label':'Birthday'},
 	'da4': {'type':'date', 'name': 'birthday'},
+	'ddc': {'type':'select', 'name': 'dd_color', 'label': 'Dropdown color', 'options': ["Red", "Green", "Blue", "Yellow", "Orange", "Black", "White" ] },
+	'ddm': {'type':'select', 'name': 'dd_month', 'label': 'Dropdown month', 'options': ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ] },
+	'ddw': {'type':'select', 'name': 'dd_day','label': 'Dropdown day', 'options': ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ] },
 	'dt1': {'type':'datetime-local', 'name': 'datetime', 'label': 'Date time'},
 	'ema': {'type':'email', 'name': 'email', 'placeholder': 'Enter your e-mail'},
 	'nf1': {'type':'text', 'name': 'firstname', 'maxlength': '10' , 'placeholder': 'Enter your first name' },
@@ -87,10 +90,13 @@ formInput = {
 	'ra5': {'type':'range', 'name': 'range', 'min': '-1000', 'max': '1000', 'label': 'Range (-1000 - 1000)' },
 	'ra6': {'type':'range', 'name': 'range', 'min': '0', 'max': '200', 'label': 'Range 200' },
 	'ra7': {'type':'range', 'name': 'range', 'min': '0', 'max': '400', 'label': 'Range 400' },
+	'rb0': {'type':'radio', 'name': 'radiobutton0', 'label': "Radio button 0", },
+	'rb1': {'type':'radio', 'name': 'radiobutton1', 'label': "Drinks: ", 'options' : ['Coffee','Tea','Limonade','Wine', 'Beer'] },
 	'res': {'type':'reset', 'name': 'reset' },
 	'sea': {'type':'search', 'name': 'search'},
 	'tel': {'type':'tel', 'name': 'phone','placeholder': 'Enter your phone number', 'label': 'Phone' },
 	'tex': {'type':'text', 'name': 'text', 'label': 'Random text'},
+	'tx1': {'type':'text', 'name': 'text', 'label': 'Field text', 'options' : ['koffie','thee','limonade']},
 	'tim': {'type':'time', 'name': 'time', 'label': 'select time'},
 	'url': {'type':'url', 'name': 'url', 'placeholder': 'Enter your url' },
 	'usr': {'type':'text', 'name': 'username', 'placeholder': 'Enter your username', 'label': 'Username' },
@@ -137,6 +143,7 @@ def create_form(formstring):
 	name_counts = dict()
 	formset = wrap(formstring,3)
 	for i in formset:
+		type = None
 		form_item = ''
 		label_item = ''
 		id_item = ''
@@ -149,22 +156,47 @@ def create_form(formstring):
 				id_item=i + '_'+str(id_counts[i])
 			else:
 				id_item=i
-			form_item = '<input id="' + id_item + '" '
+			options = None
+			name_item = None
 			for j in formInput[i]:
+				if j.lower() == 'type':
+					type = formInput[i][j].lower()
 				if j.lower() == 'name':
 					if formInput[i][j] in name_counts:
 						name_counts[formInput[i][j]] += 1
-						form_item = form_item + j  +  '="' + formInput[i][j]+ '_' + str(name_counts[formInput[i][j]]) + '" '
+						name_item = formInput[i][j]+ '_' + str(name_counts[formInput[i][j]]) + '" '
 					else:
 						name_counts[formInput[i][j]] = 1
-						form_item = form_item + j  +  '="' + formInput[i][j]+ '" '
+						name_item = formInput[i][j]+ '" '
 				elif j.lower() == 'label':
 					label_item=str(formInput[i][j])
+				elif j.lower() == 'options':
+					options = formInput[i][j] 
 				else:
-					form_item = form_item + j +  '="' + formInput[i][j]+ '" '
-			if label_item != '':
-				form = form + '<label for="'+id_item+ '">'+label_item + ': </label>' 
-			form = form + form_item +'> </br> \n'
+					form_item = form_item + j +  '="' + str(formInput[i][j])+ '" '
+			# input type
+			if type.lower() != 'select':
+				if options:
+					for option in options:
+						if label_item != '':
+							form = form + '<label for="'+id_item + '_' + str(option)+'">'+label_item +' '+str(option)+ '</label>' 
+						form = form + '<input id="' + id_item + '_' + str(option)+'" ' + form_item + ' name="' + name_item + '" value="' + str(option) +'"> </br> \n'
+				else:
+					form_item = '<input id="' + id_item + '" ' + form_item + ' name="' + name_item + '" ' 
+					if label_item != '':
+						form = form + '<label for="'+id_item+ '">'+label_item + '</label>' 
+					form = form + form_item +'> </br> \n'
+			# dropdown select type
+			else:
+				if options:
+					if label_item != '':
+							form = form + '<label for="'+id_item+'">'+label_item+'</label>' 
+					form = form + '<select id="' + id_item + '"  name= "' + name_item + '" ' + form_item + ' >\n'
+					for option in options:
+						form = form + '   <option value="' + str(option) + '"  >' + str(option) + '</option> value=' + str(option) +'>\n'
+					form = form + "</select> <br /> \n"
+				else:
+					print("WARNING: select field without options, skipping")
 		else:
 			print("WARNING: unknown field '{}', skipping".format(i))
 	form = form + '<input type="hidden" name="formstring" id="formstring" value="{}">\n'.format(formstring)
