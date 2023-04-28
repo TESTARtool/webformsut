@@ -92,6 +92,8 @@ formInput = {
 	'ra7': {'type':'range', 'name': 'range', 'min': '0', 'max': '400', 'label': 'Range 400' },
 	'rb0': {'type':'radio', 'name': 'radiobutton0', 'label': "Radio button 0", },
 	'rb1': {'type':'radio', 'name': 'radiobutton1', 'label': "Drinks: ", 'options' : ['Coffee','Tea','Limonade','Wine', 'Beer'] },
+	'rbc': {'type':'radio', 'name': 'colorradio', 'label': "Color: ", 'options' : ["Red", "Green", "Blue", "Yellow", "Orange", "Black", "White" ] },
+	'rbg': {'type':'radio', 'name': 'Gender', 'label': "Gender: ", 'options' : ["Male", "Female", ] },
 	'res': {'type':'reset', 'name': 'reset' },
 	'sea': {'type':'search', 'name': 'search'},
 	'tel': {'type':'tel', 'name': 'phone','placeholder': 'Enter your phone number', 'label': 'Phone' },
